@@ -1,0 +1,17 @@
+﻿@page "/Authors/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View Author</h3>
+
+<FormComponent Author="Author" Disabled="true" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Author Author = new Author();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        Author = await _client.GetFromJsonAsync<Author>($"{Endpoints.AuthorsEndpoint}/{id}");
+    }
+}

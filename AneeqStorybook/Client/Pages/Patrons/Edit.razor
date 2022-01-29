@@ -1,0 +1,23 @@
+﻿@page "/Patrons/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit Patron</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="EditPatron" Patron="Patron" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Patron Patron = new Patron();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        Patron = await _client.GetFromJsonAsync<Patron>($"{Endpoints.PatronsEndpoint}/{id}");
+    }
+
+    async Task EditPatron()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.PatronsEndpoint}/{id}", Patron);
+        _navManager.NavigateTo("/Patrons/");
+    }
+}

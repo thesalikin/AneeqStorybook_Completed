@@ -1,0 +1,66 @@
+﻿@page "/"
+
+<!DOCTYPE html>
+
+<style>
+     @@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+     body {
+         font-family: 'Anton', sans-serif;
+     }
+
+     h1 {
+         text-align: center;
+         font-size: 100px;
+         font-style = color: #D0CCC1;
+     }
+
+     h3 {
+         text-align: center;
+         font-size: 50px;
+         font-style = color: #D0CCC1;
+     }
+
+     body {
+         margin: 0;
+         padding: 0;
+     }
+
+     .box {
+         float: left;
+         width: 33.33%;
+         padding: 100px;
+         background-size: contain;
+     }
+
+     .container::after {
+         content: "";
+         clear: both;
+         display: table;
+     }
+
+     /*.img-book{
+        width: 300px;
+    }*/
+</style>
+
+<h1 style=" color: #D0CCC1;"> ANEEQ STORYBOOK </h1>
+<h3 style=" color: #D0CCC1;"><u>SUGGESTED READS</u></h3>
+
+@*<img class="img-book" src= "/css/images/geronimo.jpg" alt="my book" />*@
+
+<body>
+    <div class=" container">
+        <div class="box">
+            <img src="/css/images/thebelljar.jpeg" alt="BellJar" style="width : 100%" />
+        </div>
+        <div class="box">
+            <img src="/css/images/geronimo.jpg" alt="Geronimo" style="width : 100%" />
+        </div>
+        <div class="box">
+            <img src="/css/images/tokyo.jpg" alt="Tokyo" style="width : 100%" />
+        </div>
+    </div>
+</body>
+@*<SurveyPrompt Title="How is Blazor working for you?" />*@
+@*no need survey*@

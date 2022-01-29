@@ -1,0 +1,23 @@
+﻿@page "/Authors/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit Author</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="EditAuthor" Author="Author" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Author Author = new Author();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        Author = await _client.GetFromJsonAsync<Author>($"{Endpoints.AuthorsEndpoint}/{id}");
+    }
+
+    async Task EditAuthor()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.AuthorsEndpoint}/{id}", Author);
+        _navManager.NavigateTo("/Authors/");
+    }
+}

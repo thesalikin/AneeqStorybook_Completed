@@ -1,0 +1,93 @@
+﻿@page "/Reservations/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@implements IDisposable
+
+<h3 class="card-title">Car Reservations</h3>
+<br />
+
+<a href="/Reservations/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Reservation
+</a>
+<br />
+<br />
+
+@if (Reservations == null)
+{
+    <div class="alert alert-info">Loading Reservations...</div>
+}
+else
+{
+    <table class="table table-responsive" id="ReservationsTable">
+        <thead>
+            <tr>
+                <th>Reservation Id</th>
+                <th>Patron License</th>
+                <th>Date</th>
+                <th>Duration in days</th>
+                <th>Plate Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Reservation in Reservations)
+            {
+                <tr>
+                    <td>@Reservation.Id</td>
+                    <td>@Reservation.Patron.FirstName</td>
+                    <td>@Reservation.DateCreated.Date.ToString("dd MMMM yyyy")</td>
+                    @*<td>@((Reservation.DateIn.Value - Reservation.DateOut).TotalDays.ToString())</td>*@
+                    @*<td>@(Reservation.DateIn != nullDT ? (Reservation.DateIn - Reservation.DateOut).TotalDays.ToString() : "To Be Determined")</td>*@
+                    <td>@(Reservation.DateIn != null ? (Reservation.DateIn.Value - Reservation.DateOut).TotalDays.ToString() : "To Be Determined")</td>
+                    <td>@Reservation.Book.Title.Name</td>
+                    <td>
+                        <a href="/Reservations/view/@Reservation.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/Reservations/edit/@Reservation.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(Reservation.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<Reservation> Reservations;
+    private DateTime nullDT = new DateTime(1, 1, 1, 0, 0, 0);
+
+    protected async override Task OnInitializedAsync()
+    {
+        Reservations = await _client.GetFromJsonAsync<List<Reservation>>($"{Endpoints.ReservationsEndpoint}");
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#ReservationsTable");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#ReservationsTable");
+    }
+
+
+    async Task Delete(int ReservationId)
+    {
+        var Reservation = Reservations.First(q => q.Id == ReservationId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {Reservation.Id}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ReservationsEndpoint}/{ReservationId}");
+            await OnInitializedAsync();
+        }
+    }
+}

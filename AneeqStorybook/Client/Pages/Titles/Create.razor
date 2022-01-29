@@ -1,0 +1,19 @@
+﻿@page "/Titles/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">Create New Title</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create Title" Title="Title" OnValidSubmit="@CreateTitle" />
+
+@code {
+    Title Title = new Title();
+
+    private async Task CreateTitle()
+    {
+        await _client.PostAsJsonAsync(Endpoints.TitlesEndpoint, Title);
+        _navManager.NavigateTo("/Titles/");
+    }
+}

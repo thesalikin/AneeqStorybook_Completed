@@ -1,0 +1,17 @@
+﻿@page "/Patrons/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View Patron</h3>
+
+<FormComponent Patron="Patron" Disabled="true" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Patron Patron = new Patron();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        Patron = await _client.GetFromJsonAsync<Patron>($"{Endpoints.PatronsEndpoint}/{id}");
+    }
+}

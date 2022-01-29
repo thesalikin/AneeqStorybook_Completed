@@ -1,0 +1,19 @@
+﻿@page "/Authors/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">Create New Author</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create Author" Author="Author" OnValidSubmit="@CreateAuthor" />
+
+@code {
+    Author Author = new Author();
+
+    private async Task CreateAuthor()
+    {
+        await _client.PostAsJsonAsync(Endpoints.AuthorsEndpoint, Author);
+        _navManager.NavigateTo("/Authors/");
+    }
+}

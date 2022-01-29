@@ -1,0 +1,28 @@
+﻿@page "/Books/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">Create New Book</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create Book" Book="Book" OnValidSubmit="@CreateBook" />
+
+@code {
+    Book Book = new Book();
+
+    private IList<Author> Authors;
+    private IList<Title> Titles;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Authors = await _client.GetFromJsonAsync<List<Author>>($"{Endpoints.AuthorsEndpoint}");
+        Titles = await _client.GetFromJsonAsync<List<Title>>($"{Endpoints.TitlesEndpoint}");
+    }
+
+    private async Task CreateBook()
+    {
+        await _client.PostAsJsonAsync(Endpoints.BooksEndpoint, Book);
+        _navManager.NavigateTo("/Books/");
+    }
+}
